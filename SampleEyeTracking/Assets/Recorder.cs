@@ -65,6 +65,10 @@ public class Recorder : MonoBehaviour
         Debug.Log("Started recording at index: " + currIndex);
       }
     }
+    else
+    {
+      scripts[currIndex].SaveIntoJson();
+    }
   }
 
   public void SetStarted(bool val)

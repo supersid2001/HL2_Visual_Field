@@ -9,16 +9,16 @@ EditorBuildSettings:
     path: Assets/MRTK/Examples/Demos/HandTracking/Scenes/HandMenuExamples.unity
     guid: 2792ec9767804e644906ab978f2eed23
   - enabled: 0
-    path: Assets/MRTK/Examples/Demos/HandTracking/Scenes/HandInteractionExamples.unity
-    guid: 3dd4a396b5225f8469b9a1eb608bfa57
-  - enabled: 0
     path: Assets/MRTK/Examples/Demos/HandTracking/Scenes/HandMenuExamples 1.unity
     guid: 16cb5f86eb573fc4ca18c13ed859153d
+  - enabled: 0
+    path: Assets/MRTK/Examples/Demos/HandTracking/Scenes/HandInteractionExamples.unity
+    guid: 3dd4a396b5225f8469b9a1eb608bfa57
   - enabled: 0
     path: Assets/AzureObjectAnchors.SDK/mrtk/Assets/MixedReality.AzureObjectAnchors/Scenes/AOASampleScene.unity
     guid: 805128889349a464895fc1426b82bf0a
   - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/SampleScene_Eye.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 0
     path: Assets/MRTK/Examples/Experimental/ExamplesHub/Scenes/MRTKExamplesHubMainMenu.unity

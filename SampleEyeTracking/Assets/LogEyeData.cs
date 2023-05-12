@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Microsoft.MixedReality.OpenXR;
 using Microsoft.MixedReality.EyeTracking;
+using Microsoft.MixedReality.Toolkit.Input;
 
 
-public class LogEyeData : MonoBehaviour
+public class LogEyeData : BaseInputHandler, IMixedRealityPointerHandler
 {
   public MoveCanvas canvasObj;
   public Text debugText;
@@ -14,11 +15,15 @@ public class LogEyeData : MonoBehaviour
   public ExtendedEyeGazeDataProvider extendedEyeGazeDataProvider;
   public GameObject camera;
 
+  public MixedRealityInputAction ClickerAction;
+
   public AudioSource source;
 
   public AudioClip fixationLossClip;
 
   public AudioClip eyeGazeMissingClip;
+
+  public AudioClip clickClip;
 
   GameObject currObject;
 
@@ -29,7 +34,8 @@ public class LogEyeData : MonoBehaviour
 
   public GetTimeValue script;
 
-  float timer = 0.0f;
+  float timer_fixation = 0.0f;
+  float timer_gaze = 0.0f;
   void Update()
   {
     var timestamp = System.DateTime.Now;
@@ -37,9 +43,9 @@ public class LogEyeData : MonoBehaviour
     var leftGazeReadingInWorldSpace = extendedEyeGazeDataProvider.GetWorldSpaceGazeReading(ExtendedEyeGazeDataProvider.GazeType.Left, timestamp);
     var rightGazeReadingInWorldSpace = extendedEyeGazeDataProvider.GetWorldSpaceGazeReading(ExtendedEyeGazeDataProvider.GazeType.Right, timestamp);
     var combinedGazeReadingInWorldSpace = extendedEyeGazeDataProvider.GetWorldSpaceGazeReading(ExtendedEyeGazeDataProvider.GazeType.Combined, timestamp);
-    Debug.Log(leftGazeReadingInWorldSpace);
     if (leftGazeReadingInWorldSpace != null)
     {
+      timer_gaze = 0.0f;
       //Version 1: Raycast vector and see if it hits object 
       //Version 2: Get eye position and vector direction to make canvas follow
       //Currently using version 2 
@@ -49,12 +55,18 @@ public class LogEyeData : MonoBehaviour
       RaycastHit hit;
       if (Physics.Raycast(ray, out hit, 100000))
       {
+        QuadScript val = hit.transform.gameObject.GetComponent<QuadScript>();
+        if (val != null)
+        {
+          val.addHitPoint(hit.textureCoord.x * 4 - 2, hit.textureCoord.y * 4 - 2);
+          Debug.Log("Hit object at: " + hit.transform.InverseTransformPoint(hit.point));
+        }
         var lasthit = hit.transform.gameObject;
         if (lasthit.tag == "FixationPoint")
         {
+          timer_fixation = 0.0f;
           source.Pause();
           fixationScript.text = "No fixation loss";
-          timer = 0.0f;
         }
         // else if (lasthit.GetComponent<Object_Tag>())
         // {
@@ -63,8 +75,8 @@ public class LogEyeData : MonoBehaviour
         else
         {
           fixationScript.text = "Fixation loss";
-          timer += Time.deltaTime;
-          if (timer >= 2.0f)
+          timer_fixation += Time.deltaTime;
+          if (timer_fixation >= 2.0f)
           {
             source.Pause();
             source.clip = fixationLossClip;
@@ -75,8 +87,8 @@ public class LogEyeData : MonoBehaviour
       }
       else
       {
-        timer += Time.deltaTime;
-        if (timer >= 2.0f)
+        timer_fixation += Time.deltaTime;
+        if (timer_fixation >= 2.0f)
         {
           source.Pause();
           source.clip = fixationLossClip;
@@ -88,12 +100,38 @@ public class LogEyeData : MonoBehaviour
     }
     else
     {
-      source.Pause();
-      source.clip = eyeGazeMissingClip;
-      source.Play();
+      timer_gaze += Time.deltaTime;
+      if (timer_gaze >= 2.0f)
+      {
+        source.Pause();
+        source.clip = eyeGazeMissingClip;
+        source.Play();
+      }
       debugText.text = "Error! Gaze data could not be found!";
     }
     //Raycast left/rightGazeReadingInWorld space vector and see if there are fixation errors 
     var combinedGazeReadingInCameraSpace = extendedEyeGazeDataProvider.GetCameraSpaceGazeReading(ExtendedEyeGazeDataProvider.GazeType.Combined, timestamp);
   }
+
+  public void OnPointerClicked(MixedRealityPointerEventData eventData)
+  {
+    if (eventData.MixedRealityInputAction == ClickerAction)
+    {
+      source.PlayOneShot(clickClip);
+    }
+  }
+
+  public void OnPointerUp(MixedRealityPointerEventData eventData) { }
+  public void OnPointerDown(MixedRealityPointerEventData eventData)
+  {
+    if (eventData.MixedRealityInputAction == ClickerAction)
+    {
+      source.PlayOneShot(clickClip);
+    }
+  }
+
+  public void OnPointerDragged(MixedRealityPointerEventData eventData) { }
+
+  protected override void UnregisterHandlers() { }
+  protected override void RegisterHandlers() { }
 }
