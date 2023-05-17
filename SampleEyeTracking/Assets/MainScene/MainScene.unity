@@ -3613,8 +3613,6 @@ MonoBehaviour:
   fixationLossClip: {fileID: 8300000, guid: 3914b07cdf65123419dcc22cc305ee26, type: 3}
   eyeGazeMissingClip: {fileID: 8300000, guid: 301bff7757379884eabfd8e2ee1785c3, type: 3}
   clickClip: {fileID: 8300000, guid: 48e57ab9e6eb9ba4f97560c9b3d79e6f, type: 3}
-  highlightMaterial: {fileID: 0}
-  script: {fileID: 0}
 --- !u!114 &675717633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11151,7 +11149,7 @@ GameObject:
   - component: {fileID: 2139137230}
   - component: {fileID: 2139137229}
   m_Layer: 6
-  m_Name: Stimuli (1)
+  m_Name: Debug_Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
